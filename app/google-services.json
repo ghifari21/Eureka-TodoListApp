@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "620646396075",
+    "firebase_url": "https://todolistapp-c265e-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "todolistapp-c265e",
+    "storage_bucket": "todolistapp-c265e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620646396075:android:9465219837d3d63f9ac7ee",
+        "android_client_info": {
+          "package_name": "com.gosty.todolistapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "620646396075-2pdh88hjfphu0ip084jp681rj7uqt0c2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfeKMzmuIZsNuFnl9YlS37G-zgeOgcaCA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620646396075-2pdh88hjfphu0ip084jp681rj7uqt0c2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
