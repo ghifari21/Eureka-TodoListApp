@@ -1,9 +1,10 @@
-package com.gosty.todolistapp.ui
+package com.gosty.todolistapp.ui.splash
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.gosty.todolistapp.R
+import com.gosty.todolistapp.ui.main.MainActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
