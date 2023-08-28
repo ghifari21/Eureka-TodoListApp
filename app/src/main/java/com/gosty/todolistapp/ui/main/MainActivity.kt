@@ -67,11 +67,20 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         )
+
+                        binding.fabAdd.setOnClickListener {
+                            startActivity(
+                                Intent(
+                                    this@MainActivity,
+                                    AddActivity::class.java
+                                )
+                            )
+                        }
                     } else {
                         binding.stateView.viewState = MultiStateView.ViewState.EMPTY
                         val empty = binding.stateView.getView(MultiStateView.ViewState.EMPTY)
                         if (empty != null) {
-                            val btn: FloatingActionButton = empty.findViewById(R.id.fab_add)
+                            val btn: FloatingActionButton = empty.findViewById(R.id.fab_add_empty)
                             btn.setOnClickListener {
                                 startActivity(
                                     Intent(
@@ -96,15 +105,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-        }
-
-        binding.fabAdd.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@MainActivity,
-                    AddActivity::class.java
-                )
-            )
         }
     }
 }
