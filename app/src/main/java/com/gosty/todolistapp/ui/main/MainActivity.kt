@@ -3,12 +3,10 @@ package com.gosty.todolistapp.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.database.FirebaseDatabase
 import com.gosty.todolistapp.R
 import com.gosty.todolistapp.data.models.Book
 import com.gosty.todolistapp.data.ui.BookListAdapter
@@ -16,15 +14,13 @@ import com.gosty.todolistapp.databinding.ActivityMainBinding
 import com.gosty.todolistapp.ui.add.AddActivity
 import com.gosty.todolistapp.ui.detail.DetailActivity
 import com.gosty.todolistapp.utils.Result
-import com.gosty.todolistapp.utils.Utility
-import com.gosty.todolistapp.utils.ViewModelFactory
 import com.kennyc.view.MultiStateView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainViewModel by viewModels {
-        ViewModelFactory.getInstance()
-    }
+    private val viewModel: MainViewModel by viewModels()
     private val adapter = BookListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {

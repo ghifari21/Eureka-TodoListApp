@@ -10,14 +10,13 @@ import com.gosty.todolistapp.data.models.Book
 import com.gosty.todolistapp.databinding.ActivityAddBinding
 import com.gosty.todolistapp.utils.Result
 import com.gosty.todolistapp.utils.Utility
-import com.gosty.todolistapp.utils.ViewModelFactory
 import com.kennyc.view.MultiStateView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddBinding
-    private val viewModel: AddViewModel by viewModels {
-        ViewModelFactory.getInstance()
-    }
+    private val viewModel: AddViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

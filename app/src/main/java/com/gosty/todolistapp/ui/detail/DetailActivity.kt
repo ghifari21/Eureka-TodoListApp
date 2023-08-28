@@ -11,14 +11,13 @@ import com.gosty.todolistapp.R
 import com.gosty.todolistapp.databinding.ActivityDetailBinding
 import com.gosty.todolistapp.ui.edit.EditActivity
 import com.gosty.todolistapp.utils.Result
-import com.gosty.todolistapp.utils.ViewModelFactory
 import com.kennyc.view.MultiStateView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
-    private val viewModel: DetailViewModel by viewModels {
-        ViewModelFactory.getInstance()
-    }
+    private val viewModel: DetailViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

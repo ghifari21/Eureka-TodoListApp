@@ -1,22 +1,21 @@
 package com.gosty.todolistapp.ui.edit
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.gosty.todolistapp.R
 import com.gosty.todolistapp.data.models.Book
 import com.gosty.todolistapp.databinding.ActivityEditBinding
 import com.gosty.todolistapp.utils.Result
-import com.gosty.todolistapp.utils.ViewModelFactory
 import com.kennyc.view.MultiStateView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
-    private val viewModel: EditViewModel by viewModels {
-        ViewModelFactory.getInstance()
-    }
+    private val viewModel: EditViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
