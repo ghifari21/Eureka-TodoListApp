@@ -1,12 +1,10 @@
 package com.gosty.todolistapp.ui.add
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Patterns
-import android.webkit.URLUtil
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.gosty.todolistapp.R
 import com.gosty.todolistapp.data.models.Book
 import com.gosty.todolistapp.databinding.ActivityAddBinding

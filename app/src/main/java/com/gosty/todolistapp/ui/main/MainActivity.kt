@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.FirebaseDatabase
 import com.gosty.todolistapp.R
 import com.gosty.todolistapp.data.models.Book
@@ -68,6 +69,18 @@ class MainActivity : AppCompatActivity() {
                         )
                     } else {
                         binding.stateView.viewState = MultiStateView.ViewState.EMPTY
+                        val empty = binding.stateView.getView(MultiStateView.ViewState.EMPTY)
+                        if (empty != null) {
+                            val btn: FloatingActionButton = empty.findViewById(R.id.fab_add)
+                            btn.setOnClickListener {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        AddActivity::class.java
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
 
