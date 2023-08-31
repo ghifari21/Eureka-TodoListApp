@@ -10,7 +10,5 @@ import javax.inject.Inject
 class EditViewModel @Inject constructor(
     private val bookRepository: BookRepository
 ) : ViewModel() {
-    val result = bookRepository.resultUpdateBook
-
     fun updateBook(book: Book) = bookRepository.updateBook(book)
 }

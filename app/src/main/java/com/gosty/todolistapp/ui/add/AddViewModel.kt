@@ -10,7 +10,5 @@ import javax.inject.Inject
 class AddViewModel @Inject constructor(
     private val bookRepository: BookRepository
 ) : ViewModel() {
-    val result = bookRepository.resultPostBook
-
     fun postBook(book: Book) = bookRepository.postBook(book)
 }

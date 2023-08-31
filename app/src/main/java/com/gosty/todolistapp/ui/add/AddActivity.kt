@@ -45,41 +45,39 @@ class AddActivity : AppCompatActivity() {
                     category = category
                 )
 
-                viewModel.postBook(book)
+                viewModel.postBook(book).observe(this@AddActivity) { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            binding.stateView.viewState = MultiStateView.ViewState.LOADING
+                        }
+
+                        is Result.Success -> {
+                            binding.stateView.viewState = MultiStateView.ViewState.CONTENT
+                            Toast.makeText(this@AddActivity, result.data, Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+
+                        is Result.Error -> {
+                            binding.stateView.viewState = MultiStateView.ViewState.ERROR
+                            Toast.makeText(this@AddActivity, result.error, Toast.LENGTH_SHORT).show()
+                            val errorView = binding.stateView.getView(MultiStateView.ViewState.ERROR)
+                            if (errorView != null) {
+                                val btn: Button = errorView.findViewById(R.id.btn_retry)
+                                btn.text = getString(R.string.reload)
+                                btn.setOnClickListener {
+                                    finish()
+                                    startActivity(intent)
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 Toast.makeText(
                     this@AddActivity,
                     getString(R.string.invalid_input),
                     Toast.LENGTH_SHORT
                 ).show()
-            }
-        }
-
-        viewModel.result.observe(this) {
-            when (it) {
-                is Result.Loading -> {
-                    binding.stateView.viewState = MultiStateView.ViewState.LOADING
-                }
-
-                is Result.Success -> {
-                    binding.stateView.viewState = MultiStateView.ViewState.CONTENT
-                    Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-
-                is Result.Error -> {
-                    binding.stateView.viewState = MultiStateView.ViewState.ERROR
-                    Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()
-                    val errorView = binding.stateView.getView(MultiStateView.ViewState.ERROR)
-                    if (errorView != null) {
-                        val btn: Button = errorView.findViewById(R.id.btn_retry)
-                        btn.text = getString(R.string.reload)
-                        btn.setOnClickListener {
-                            finish()
-                            startActivity(intent)
-                        }
-                    }
-                }
             }
         }
     }

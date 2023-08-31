@@ -1,9 +1,11 @@
 package com.gosty.todolistapp.data.repositories
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -14,17 +16,9 @@ import com.gosty.todolistapp.utils.Result
 import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
-    private val db: FirebaseDatabase
+    private val db: FirebaseDatabase,
+    private val crashlytics: FirebaseCrashlytics
 ) : BookRepository {
-    private val _resultPostBook = MutableLiveData<Result<String>>()
-    override val resultPostBook: LiveData<Result<String>> get() = _resultPostBook
-
-    private val _resultUpdateBook = MutableLiveData<Result<String>>()
-    override val resultUpdateBook: LiveData<Result<String>> get() = _resultUpdateBook
-
-    private val _resultDeleteBook = MutableLiveData<Result<String>>()
-    override val resultDeleteBook: LiveData<Result<String>> get() = _resultDeleteBook
-
     override fun getAllBooks(): LiveData<Result<List<Book>>> = liveData {
         emit(Result.Loading)
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
@@ -39,6 +33,7 @@ class BookRepositoryImpl @Inject constructor(
 
             override fun onCancelled(error: DatabaseError) {
                 errorMessage = error.message
+                crashlytics.log(error.message)
             }
         })
 
@@ -63,6 +58,7 @@ class BookRepositoryImpl @Inject constructor(
 
             override fun onCancelled(error: DatabaseError) {
                 errorMessage = error.message
+                crashlytics.log(error.message)
             }
         })
 
@@ -76,39 +72,48 @@ class BookRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun postBook(book: Book) {
-        _resultPostBook.postValue(Result.Loading)
+    override fun postBook(book: Book): LiveData<Result<String>> {
+        val result = MediatorLiveData<Result<String>>()
+        result.value = Result.Loading
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
         bookRef.child(book.id!!).setValue(book)
             .addOnSuccessListener {
-                _resultPostBook.postValue(Result.Success("Berhasil"))
+                result.value = Result.Success("Berhasil")
             }
             .addOnFailureListener {
-                _resultPostBook.postValue(Result.Error(it.message.toString()))
+                result.value = Result.Error(it.message.toString())
+                crashlytics.log(it.message.toString())
             }
+        return result
     }
 
-    override fun updateBook(book: Book) {
-        _resultUpdateBook.postValue(Result.Loading)
+    override fun updateBook(book: Book): LiveData<Result<String>> {
+        val result = MediatorLiveData<Result<String>>()
+        result.value = Result.Loading
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
         bookRef.child(book.id!!).updateChildren(book.toMap())
             .addOnSuccessListener {
-                _resultUpdateBook.postValue(Result.Success("Berhasil"))
+                result.value =  Result.Success("Berhasil")
             }
             .addOnFailureListener {
-                _resultUpdateBook.postValue(Result.Error(it.message.toString()))
+                result.value = Result.Error(it.message.toString())
+                crashlytics.log(it.message.toString())
             }
+        return result
     }
 
-    override fun deleteBook(id: String) {
-        _resultDeleteBook.postValue(Result.Loading)
+    override fun deleteBook(id: String): LiveData<Result<String>> {
+        val result = MediatorLiveData<Result<String>>()
+        result.value = Result.Loading
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
         bookRef.child(id).removeValue()
             .addOnSuccessListener {
-                _resultDeleteBook.postValue(Result.Success("Berhasil"))
+                result.value = Result.Success("Berhasil")
             }
             .addOnFailureListener {
-                _resultDeleteBook.postValue(Result.Error(it.message.toString()))
+                result.value = Result.Error(it.message.toString())
+                crashlytics.log(it.message.toString())
             }
+        return result
     }
 }

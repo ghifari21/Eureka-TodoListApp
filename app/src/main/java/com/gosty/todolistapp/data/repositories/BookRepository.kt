@@ -5,12 +5,9 @@ import com.gosty.todolistapp.data.models.Book
 import com.gosty.todolistapp.utils.Result
 
 interface BookRepository {
-    val resultPostBook: LiveData<Result<String>>
-    val resultUpdateBook: LiveData<Result<String>>
-    val resultDeleteBook: LiveData<Result<String>>
     fun getAllBooks(): LiveData<Result<List<Book>>>
     fun getBookById(id: String): LiveData<Result<Book>>
-    fun postBook(book: Book)
-    fun updateBook(book: Book)
-    fun deleteBook(id: String)
+    fun postBook(book: Book): LiveData<Result<String>>
+    fun updateBook(book: Book): LiveData<Result<String>>
+    fun deleteBook(id: String): LiveData<Result<String>>
 }

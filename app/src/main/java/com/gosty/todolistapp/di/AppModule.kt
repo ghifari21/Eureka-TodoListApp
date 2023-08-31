@@ -1,5 +1,6 @@
 package com.gosty.todolistapp.di
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.database.FirebaseDatabase
 import com.gosty.todolistapp.data.repositories.BookRepository
 import com.gosty.todolistapp.data.repositories.BookRepositoryImpl
@@ -18,5 +19,9 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideBookRepository(db: FirebaseDatabase): BookRepository = BookRepositoryImpl(db)
+    fun provideFirebaseCrashlytics(): FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideBookRepository(db: FirebaseDatabase, crashlytics: FirebaseCrashlytics): BookRepository = BookRepositoryImpl(db, crashlytics)
 }

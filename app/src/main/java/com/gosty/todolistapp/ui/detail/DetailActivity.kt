@@ -60,7 +60,33 @@ class DetailActivity : AppCompatActivity() {
                         }
 
                         btnDelete.setOnClickListener {
-                            viewModel.deleteBook(id)
+                            viewModel.deleteBook(id).observe(this@DetailActivity) { result ->
+                                when (result) {
+                                    is Result.Loading -> {
+                                        binding.stateView.viewState = MultiStateView.ViewState.LOADING
+                                    }
+
+                                    is Result.Success -> {
+                                        binding.stateView.viewState = MultiStateView.ViewState.CONTENT
+                                        Toast.makeText(this@DetailActivity, result.data, Toast.LENGTH_SHORT).show()
+                                        finish()
+                                    }
+
+                                    is Result.Error -> {
+                                        binding.stateView.viewState = MultiStateView.ViewState.ERROR
+                                        Toast.makeText(this@DetailActivity, result.error, Toast.LENGTH_SHORT).show()
+                                        val errorView = binding.stateView.getView(MultiStateView.ViewState.ERROR)
+                                        if (errorView != null) {
+                                            val btn: Button = errorView.findViewById(R.id.btn_retry)
+                                            btn.text = getString(R.string.reload)
+                                            btn.setOnClickListener {
+                                                finish()
+                                                startActivity(intent)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -70,34 +96,6 @@ class DetailActivity : AppCompatActivity() {
                     val errorView = binding.stateView.getView(MultiStateView.ViewState.ERROR)
                     if (errorView != null) {
                         val btn: Button = errorView.findViewById(R.id.btn_retry)
-                        btn.setOnClickListener {
-                            finish()
-                            startActivity(intent)
-                        }
-                    }
-                }
-            }
-        }
-
-        viewModel.result.observe(this) {
-            when (it) {
-                is Result.Loading -> {
-                    binding.stateView.viewState = MultiStateView.ViewState.LOADING
-                }
-
-                is Result.Success -> {
-                    binding.stateView.viewState = MultiStateView.ViewState.CONTENT
-                    Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-
-                is Result.Error -> {
-                    binding.stateView.viewState = MultiStateView.ViewState.ERROR
-                    Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()
-                    val errorView = binding.stateView.getView(MultiStateView.ViewState.ERROR)
-                    if (errorView != null) {
-                        val btn: Button = errorView.findViewById(R.id.btn_retry)
-                        btn.text = getString(R.string.reload)
                         btn.setOnClickListener {
                             finish()
                             startActivity(intent)

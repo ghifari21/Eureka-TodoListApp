@@ -9,8 +9,6 @@ import javax.inject.Inject
 class DetailViewModel @Inject constructor(
     private val bookRepository: BookRepository
 ) : ViewModel() {
-    val result = bookRepository.resultDeleteBook
-
     fun deleteBook(id: String) = bookRepository.deleteBook(id)
 
     fun getBookById(id: String) = bookRepository.getBookById(id)
