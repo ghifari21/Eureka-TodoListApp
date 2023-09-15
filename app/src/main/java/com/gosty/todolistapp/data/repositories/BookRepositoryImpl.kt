@@ -1,5 +1,7 @@
 package com.gosty.todolistapp.data.repositories
 
+import android.content.Context
+import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,103 +19,156 @@ import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
     private val db: FirebaseDatabase,
-    private val crashlytics: FirebaseCrashlytics
+    private val crashlytics: FirebaseCrashlytics,
+    private val context: Context
 ) : BookRepository {
-    override fun getAllBooks(): LiveData<Result<List<Book>>> = liveData {
-        emit(Result.Loading)
+    /***
+     * This method to get all the book collection from realtime database.
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     */
+    override fun getAllBooks(): LiveData<Result<List<Book>>> {
+        val result = MediatorLiveData<Result<List<Book>>>()
+        result.value = Result.Loading
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
-        val books = MutableLiveData<List<Book>>()
-        var errorMessage = ""
-        bookRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                books.value = snapshot.children.map {
-                    it.getValue(Book::class.java)!!
+
+        if (isInternetAvailable()) {
+            bookRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                     val data = snapshot.children.map {
+                         it.getValue(Book::class.java)!!
+                     }
+                    result.value = Result.Success(data)
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                errorMessage = error.message
-                crashlytics.log(error.message)
-            }
-        })
-
-        if (errorMessage == "") {
-            val data: LiveData<Result<List<Book>>> = books.map {
-                Result.Success(it)
-            }
-            emitSource(data)
+                override fun onCancelled(error: DatabaseError) {
+                    result.value = Result.Error(error.message)
+                    crashlytics.log(error.message)
+                }
+            })
         } else {
-            emit(Result.Error(errorMessage))
+            result.value = Result.Error("Connection Error, Please Check Your Connection.")
         }
+
+        return result
     }
 
-    override fun getBookById(id: String): LiveData<Result<Book>> = liveData {
+    /***
+     * This method to get book based on the id from realtime database.
+     * @param id variable that indicate book ID
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     */
+    override fun getBookById(id: String): LiveData<Result<Book>> {
+        val result = MediatorLiveData<Result<Book>>()
+        result.value = Result.Loading
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
-        val book = MutableLiveData<Book>()
-        var errorMessage = ""
-        bookRef.child(id).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                book.value = snapshot.getValue(Book::class.java)
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                errorMessage = error.message
-                crashlytics.log(error.message)
-            }
-        })
+        if (isInternetAvailable()) {
+            bookRef.child(id).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val data = snapshot.getValue(Book::class.java)!!
+                    result.value = Result.Success(data)
+                }
 
-        if (errorMessage == "") {
-            val data: LiveData<Result<Book>> = book.map {
-                Result.Success(it)
-            }
-            emitSource(data)
+                override fun onCancelled(error: DatabaseError) {
+                    result.value = Result.Error(error.message)
+                    crashlytics.log(error.message)
+                }
+            })
         } else {
-            emit(Result.Error(errorMessage))
+            result.value = Result.Error("Connection Error, Please Check Your Connection.")
         }
+
+        return result
     }
 
+    /***
+     * This method to add the book data to realtime database.
+     * @param book variable that contain book model
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     * @see Book
+     */
     override fun postBook(book: Book): LiveData<Result<String>> {
         val result = MediatorLiveData<Result<String>>()
         result.value = Result.Loading
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
-        bookRef.child(book.id!!).setValue(book)
-            .addOnSuccessListener {
-                result.value = Result.Success("Berhasil")
-            }
-            .addOnFailureListener {
-                result.value = Result.Error(it.message.toString())
-                crashlytics.log(it.message.toString())
-            }
+        if (isInternetAvailable()) {
+            bookRef.child(book.id!!).setValue(book)
+                .addOnSuccessListener {
+                    result.value = Result.Success("Berhasil")
+                }
+                .addOnFailureListener {
+                    result.value = Result.Error(it.message.toString())
+                    crashlytics.log(it.message.toString())
+                }
+        } else {
+            result.value = Result.Error("Connection Error, Please Check Your Connection.")
+        }
         return result
     }
 
+    /***
+     * This method to update the book data in realtime database.
+     * @param book variable that contain book model
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     * @see Book
+     */
     override fun updateBook(book: Book): LiveData<Result<String>> {
         val result = MediatorLiveData<Result<String>>()
         result.value = Result.Loading
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
-        bookRef.child(book.id!!).updateChildren(book.toMap())
-            .addOnSuccessListener {
-                result.value =  Result.Success("Berhasil")
-            }
-            .addOnFailureListener {
-                result.value = Result.Error(it.message.toString())
-                crashlytics.log(it.message.toString())
-            }
+        if (isInternetAvailable()) {
+            bookRef.child(book.id!!).updateChildren(book.toMap())
+                .addOnSuccessListener {
+                    result.value =  Result.Success("Book has been updated.")
+                }
+                .addOnFailureListener {
+                    result.value = Result.Error(it.message.toString())
+                    crashlytics.log(it.message.toString())
+                }
+        } else {
+            result.value = Result.Error("Connection Error, Please Check Your Connection.")
+        }
         return result
     }
 
+    /***
+     * This method to delete book that match the ID from realtime database.
+     * @param id variable that indicate book ID
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     */
     override fun deleteBook(id: String): LiveData<Result<String>> {
         val result = MediatorLiveData<Result<String>>()
         result.value = Result.Loading
         val bookRef = db.reference.child(BuildConfig.BOOK_REF)
-        bookRef.child(id).removeValue()
-            .addOnSuccessListener {
-                result.value = Result.Success("Berhasil")
-            }
-            .addOnFailureListener {
-                result.value = Result.Error(it.message.toString())
-                crashlytics.log(it.message.toString())
-            }
+        if (isInternetAvailable()) {
+            bookRef.child(id).removeValue()
+                .addOnSuccessListener {
+                    result.value = Result.Success("Book has been deleted.")
+                }
+                .addOnFailureListener {
+                    result.value = Result.Error(it.message.toString())
+                    crashlytics.log(it.message.toString())
+                }
+        } else {
+            result.value = Result.Error("Connection Error, Please Check Your Connection.")
+        }
         return result
+    }
+
+    /***
+     * This method to check user internet connectivity.
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     */
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        return activeNetwork?.isConnectedOrConnecting == true
     }
 }
