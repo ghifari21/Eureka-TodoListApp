@@ -32,6 +32,11 @@ class MainActivity : AppCompatActivity() {
         initView()
     }
 
+    /***
+     * This method to initialize the view for MainActivity.
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     */
     private fun initView() {
         viewModel.getAllBooks().observe(this) {
             when (it) {

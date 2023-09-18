@@ -10,5 +10,12 @@ import javax.inject.Inject
 class EditViewModel @Inject constructor(
     private val bookRepository: BookRepository
 ) : ViewModel() {
+    /***
+     * This method to update a book in realtime database.
+     * @param book variable that contain book model
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     * @see Book
+     */
     fun updateBook(book: Book) = bookRepository.updateBook(book)
 }

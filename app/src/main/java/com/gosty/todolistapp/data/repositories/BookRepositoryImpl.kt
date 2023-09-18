@@ -67,8 +67,10 @@ class BookRepositoryImpl @Inject constructor(
         if (isInternetAvailable()) {
             bookRef.child(id).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val data = snapshot.getValue(Book::class.java)!!
-                    result.value = Result.Success(data)
+                    val data = snapshot.getValue(Book::class.java)
+                    if (data != null) {
+                        result.value = Result.Success(data)
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {

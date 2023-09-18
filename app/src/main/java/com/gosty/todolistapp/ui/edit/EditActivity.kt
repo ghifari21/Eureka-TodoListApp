@@ -11,6 +11,7 @@ import com.gosty.todolistapp.databinding.ActivityEditBinding
 import com.gosty.todolistapp.utils.Result
 import com.kennyc.view.MultiStateView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Calendar
 
 @AndroidEntryPoint
 class EditActivity : AppCompatActivity() {
@@ -27,6 +28,13 @@ class EditActivity : AppCompatActivity() {
         initView(book)
     }
 
+    /***
+     * This method to initialize the view for EditActivity.
+     * @param book variable that contain book Model
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     * @see Book
+     */
     private fun initView(book: Book?) {
         binding.apply {
             edtCover.setText(book?.cover)
@@ -90,7 +98,13 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
+    /***
+     * This method to validate all user input.
+     * @author Ghifari Octaverin
+     * @since Sept 15th, 2023
+     */
     private fun validateInput(): Boolean {
+        val calendar = Calendar.getInstance()
         var result = true
         val cover = binding.edtCover.text.toString().trim()
         val title = binding.edtTitle.text.toString().trim()
@@ -118,6 +132,23 @@ class EditActivity : AppCompatActivity() {
         if (category.isEmpty()) {
             result = false
             binding.edtCategory.error = getString(R.string.empty_field)
+        }
+
+        // Check valid year
+        if (year.isNotEmpty() && year !in "1800"..calendar.get(Calendar.YEAR).toString()) {
+            result = false
+            binding.edtYear.error =
+                getString(R.string.valid_year, calendar.get(Calendar.YEAR).toString())
+        }
+
+        // Check valid image type
+        if (cover.isNotEmpty() && (!cover.endsWith(".jpg", true) && !cover.endsWith(
+                ".png",
+                true
+            ) && !cover.endsWith(".jpeg", true))
+        ) {
+            result = false
+            binding.edtCover.error = getString(R.string.valid_image_url)
         }
 
         return result

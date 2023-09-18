@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:msv_errorView="@layout/error_view"
     app:msv_loadingView="@layout/loading_detail_view"
-    app:msv_viewState="loading"
+    app:msv_viewState="content"
     tools:context=".ui.detail.DetailActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,9 +88,8 @@
                 android:maxLines="2"
                 android:ellipsize="end"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/tv_title"
                 app:layout_constraintStart_toEndOf="@id/tv_category"
-                app:layout_constraintTop_toTopOf="@id/tv_title"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/title" />
 
             <TextView

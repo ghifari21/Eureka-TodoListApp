@@ -12,9 +12,15 @@
     <string name="category">Category</string>
     <string name="submit">Submit</string>
     <string name="empty_field">Please fill this field</string>
+    <string name="valid_year">Please input the year between 1800 and %s</string>
+    <string name="valid_image_url">Please input PNG, JPG, or JPEG image url</string>
     <string name="invalid_input">Invalid Input</string>
     <string name="reload">Reload</string>
     <string name="show_data">: %s</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
+    <string name="delete_book">Delete Book?</string>
+    <string name="delete_confirm">Are you sure want to delete this book?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
